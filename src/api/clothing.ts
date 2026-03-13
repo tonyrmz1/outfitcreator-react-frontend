@@ -16,7 +16,15 @@ class ClothingItemsAPI {
 
   async create(data: ClothingItemFormData, photo?: File): Promise<ClothingItem> {
     const formData = new FormData();
-    formData.append('data', JSON.stringify(data));
+    formData.append('name', data.name);
+    formData.append('primaryColor', data.primaryColor);
+    formData.append('category', data.category);
+    if (data.brand) formData.append('brand', data.brand);
+    if (data.secondaryColor) formData.append('secondaryColor', data.secondaryColor);
+    if (data.size) formData.append('size', data.size);
+    if (data.season) formData.append('season', data.season);
+    if (data.fitCategory) formData.append('fitCategory', data.fitCategory);
+    if (data.purchaseDate) formData.append('purchaseDate', data.purchaseDate);
     if (photo) {
       formData.append('photo', photo);
     }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDropzone } from 'react-dropzone';
@@ -24,6 +24,13 @@ export const ClothingItemForm: React.FC<ClothingItemFormProps> = ({
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(item?.photoUrl || null);
   const [photoError, setPhotoError] = useState<string | null>(null);
+
+  // Cleanup is no longer needed since we're using data URLs instead of blob URLs
+  useEffect(() => {
+    return () => {
+      // No cleanup needed for data URLs
+    };
+  }, []);
 
   const {
     control,
@@ -63,9 +70,12 @@ export const ClothingItemForm: React.FC<ClothingItemFormProps> = ({
       const file = acceptedFiles[0];
       setPhotoFile(file);
       
-      // Create preview URL
-      const previewUrl = URL.createObjectURL(file);
-      setPhotoPreview(previewUrl);
+      // Create preview using FileReader for better compatibility
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   }, []);
 
@@ -270,11 +280,11 @@ export const ClothingItemForm: React.FC<ClothingItemFormProps> = ({
         
         {photoPreview ? (
           <div className="space-y-2">
-            <div className="relative w-full h-48 border-2 border-gray-300 rounded-lg overflow-hidden">
+            <div className="relative w-full h-48 border-2 border-gray-300 rounded-lg overflow-hidden bg-gray-50">
               <img
                 src={photoPreview}
                 alt="Preview"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
             <Button

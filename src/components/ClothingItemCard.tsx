@@ -65,11 +65,11 @@ export const ClothingItemCard: React.FC<ClothingItemCardProps> = React.memo(({
       aria-pressed={selectable ? selected : undefined}
     >
       {/* Photo */}
-      <div className="relative w-full h-48 bg-gray-100">
+      <div className="relative w-full h-48 bg-gray-50">
         <LazyImage
           src={item.photoUrl || placeholderImage}
           alt={item.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
           placeholderSrc={placeholderImage}
         />
         {selected && (

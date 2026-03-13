@@ -25,9 +25,14 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
+    // Reset states when src changes
+    setIsLoaded(false);
+    setHasError(false);
+    
     // Check if Intersection Observer is supported
     if (!('IntersectionObserver' in window)) {
       // Fallback: load image immediately if Intersection Observer is not supported
+      console.log('IntersectionObserver not supported, loading image immediately:', src);
       setImageSrc(src);
       return;
     }
@@ -37,6 +42,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             // Image is in viewport, load it
+            console.log('Image entering viewport, loading:', src);
             setImageSrc(src);
             // Stop observing once image is loaded
             if (imgRef.current) {
@@ -64,10 +70,13 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   }, [src]);
 
   const handleLoad = () => {
+    console.log('Image loaded successfully:', src);
     setIsLoaded(true);
   };
 
-  const handleError = () => {
+  const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    console.error(`Failed to load image: ${src}`, e);
+    console.error('Current imageSrc:', imageSrc);
     setHasError(true);
     setImageSrc(placeholderSrc);
   };
