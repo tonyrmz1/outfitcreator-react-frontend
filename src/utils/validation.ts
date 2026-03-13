@@ -29,14 +29,14 @@ export const registerSchema = z
 // Clothing item validation
 export const clothingItemSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255),
-  brand: z.string().max(100).optional(),
+  brand: z.string().max(100).optional().or(z.literal('')).nullable(),
   primaryColor: z.string().min(1, 'Primary color is required'),
-  secondaryColor: z.string().optional(),
+  secondaryColor: z.string().optional().or(z.literal('')).nullable(),
   category: z.nativeEnum(ClothingCategory),
-  size: z.string().optional(),
-  season: z.nativeEnum(Season).optional(),
-  fitCategory: z.nativeEnum(FitCategory).optional(),
-  purchaseDate: z.string().optional(),
+  size: z.string().optional().or(z.literal('')).nullable(),
+  season: z.nativeEnum(Season).optional().nullable(),
+  fitCategory: z.nativeEnum(FitCategory).optional().nullable(),
+  purchaseDate: z.string().optional().or(z.literal('')).nullable(),
 });
 
 // Outfit validation
