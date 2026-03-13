@@ -1,6 +1,7 @@
 import React from 'react';
 import { OutfitRecommendation } from '../types';
 import { Button } from './Button';
+import { LazyImage } from './LazyImage';
 import { getScoreColor, formatScore, getScoreLabel } from '../utils/scores';
 
 export interface RecommendationCardProps {
@@ -53,39 +54,40 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = React.memo(
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       {/* Item Photos Grid */}
-      <div className="relative w-full h-48 bg-gray-100">
+      <div className="relative w-full h-64 bg-gray-100">
         {recommendation.items.length > 0 ? (
           <div
-            className={`grid h-full ${
-              recommendation.items.length === 1
-                ? 'grid-cols-1'
-                : recommendation.items.length === 2
-                ? 'grid-cols-2'
-                : recommendation.items.length === 3
-                ? 'grid-cols-3'
-                : 'grid-cols-2 grid-rows-2'
-            }`}
+            className="grid h-full"
+            style={{
+              gridTemplateColumns: 
+                recommendation.items.length === 1
+                  ? '1fr'
+                  : recommendation.items.length === 2
+                  ? 'repeat(2, 1fr)'
+                  : recommendation.items.length === 3
+                  ? 'repeat(3, 1fr)'
+                  : 'repeat(2, 1fr)',
+              gridTemplateRows: recommendation.items.length === 4 ? 'repeat(2, 1fr)' : '1fr'
+            }}
           >
             {recommendation.items.slice(0, 4).map((item) => (
-              <div key={item.id} className="relative w-full h-full">
-                <img
+              <div key={item.id} className="relative w-full h-full bg-gray-50 overflow-hidden">
+                <LazyImage
                   src={item.photoUrl || placeholderImage}
                   alt={item.name}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = placeholderImage;
-                  }}
+                  placeholderSrc={placeholderImage}
                 />
               </div>
             ))}
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <img
+          <div className="flex items-center justify-center h-full bg-gray-50">
+            <LazyImage
               src={placeholderImage}
               alt="No items"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
+              placeholderSrc={placeholderImage}
             />
           </div>
         )}
