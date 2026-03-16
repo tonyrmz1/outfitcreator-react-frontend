@@ -219,7 +219,7 @@ export const ClothingItemForm: React.FC<ClothingItemFormProps> = ({
           <Select
             label="Season"
             value={field.value || ''}
-            onChange={field.onChange}
+            onChange={(val) => field.onChange(val === '' ? undefined : val)}
             options={[
               { value: '', label: 'Select season' },
               { value: Season.SPRING, label: 'Spring' },
@@ -242,7 +242,7 @@ export const ClothingItemForm: React.FC<ClothingItemFormProps> = ({
           <Select
             label="Fit"
             value={field.value || ''}
-            onChange={field.onChange}
+            onChange={(val) => field.onChange(val === '' ? undefined : val)}
             options={[
               { value: '', label: 'Select fit' },
               { value: FitCategory.TIGHT, label: 'Tight' },
