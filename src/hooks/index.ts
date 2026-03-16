@@ -1,7 +1,9 @@
 // Custom hooks
-export { useAuth } from './useAuth';
-export { useAutoLogout } from './useAutoLogout';
-export { useClothingItems } from './useClothingItems';
-export { useDebounce } from './useDebounce';
-export { useOutfits } from './useOutfits';
-export { useRecommendations } from './useRecommendations';
+export { useAuth } from './auth/useAuth';
+export { useAutoLogout } from './auth/useAutoLogout';
+export { useClothingItems } from './data/useClothingItems';
+export { useDebounce } from './ui/useDebounce';
+export { useOutfits } from './data/useOutfits';
+export { useRecommendations } from './data/useRecommendations';
+export { useTheme } from './theme/useTheme';
+export { useToast } from './ui/useToast';

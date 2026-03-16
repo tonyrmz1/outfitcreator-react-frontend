@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../contexts';
-import { useClothingItems } from '../hooks/useClothingItems';
-import { useOutfits } from '../hooks/useOutfits';
+import { useClothingItems } from '../hooks/data/useClothingItems';
+import { useOutfits } from '../hooks/data/useOutfits';
 import { profileSchema } from '../schemas/auth.schemas';
-import { Input } from '../components/Input';
-import { Button } from '../components/Button';
-import { ErrorMessage } from '../components/ErrorMessage';
+import { Input } from '../components/common/Input';
+import { Button } from '../components/common/Button';
+import { ErrorMessage } from '../components/common/ErrorMessage';
+import { ThemeSelector } from '../components/features/Theme/ThemeSelector';
 import type { ProfileFormData } from '../types';
 
 /**
@@ -135,6 +136,14 @@ export function ProfilePage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Theme Preferences */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Theme Preferences
+          </h2>
+          <ThemeSelector />
         </div>
 
         {/* Profile Update Form */}

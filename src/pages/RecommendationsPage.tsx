@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useRecommendations } from '../hooks/useRecommendations';
-import { RecommendationCard } from '../components/RecommendationCard';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { Select } from '../components/Select';
-import { Input } from '../components/Input';
+import { useRecommendations } from '../hooks/data/useRecommendations';
+import { RecommendationCard } from '../components/features/Recommendations/RecommendationCard';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { ErrorMessage } from '../components/common/ErrorMessage';
+import { Select } from '../components/common/Select';
+import { Input } from '../components/common/Input';
 import { Season, type OutfitRecommendation, type RecommendationFilters } from '../types';
 
 /**

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useClothingItems } from '../hooks/useClothingItems';
-import { FilterPanel } from '../components/FilterPanel';
-import { ClothingItemCard } from '../components/ClothingItemCard';
-import { ClothingItemForm } from '../components/ClothingItemForm';
-import { Pagination } from '../components/Pagination';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { Modal } from '../components/Modal';
-import { Button } from '../components/Button';
+import { useClothingItems } from '../hooks/data/useClothingItems';
+import { FilterPanel } from '../components/features/Closet/FilterPanel';
+import { ClothingItemCard } from '../components/features/Closet/ClothingItemCard';
+import { ClothingItemForm } from '../components/features/Closet/ClothingItemForm';
+import { Pagination } from '../components/common/Pagination';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { ErrorMessage } from '../components/common/ErrorMessage';
+import { Modal } from '../components/common/Modal';
+import { Button } from '../components/common/Button';
 import type { ClothingItemFilters, ClothingItem, ClothingItemFormData } from '../types';
 
 /**

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useOutfits } from '../hooks/useOutfits';
-import { OutfitCard } from '../components/OutfitCard';
-import { OutfitBuilder } from '../components/OutfitBuilder';
-import { Pagination } from '../components/Pagination';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { Button } from '../components/Button';
+import { useOutfits } from '../hooks/data/useOutfits';
+import { OutfitCard } from '../components/features/Outfits/OutfitCard';
+import { OutfitBuilder } from '../components/features/Outfits/OutfitBuilder';
+import { Pagination } from '../components/common/Pagination';
+import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { ErrorMessage } from '../components/common/ErrorMessage';
+import { Button } from '../components/common/Button';
 import type { Outfit, OutfitFormData } from '../types';
 
 /**

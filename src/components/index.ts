@@ -1,56 +1,59 @@
 // Shared components
-export { Button } from './Button';
-export type { ButtonProps } from './Button';
+export { Button } from './common/Button';
+export type { ButtonProps } from './common/Button';
 
-export { Input } from './Input';
-export type { InputProps } from './Input';
+export { Input } from './common/Input';
+export type { InputProps } from './common/Input';
 
-export { Select } from './Select';
-export type { SelectProps, SelectOption } from './Select';
+export { Select } from './common/Select';
+export type { SelectProps, SelectOption } from './common/Select';
 
-export { Modal } from './Modal';
-export type { ModalProps } from './Modal';
+export { Modal } from './common/Modal';
+export type { ModalProps } from './common/Modal';
 
-export { LoadingSpinner } from './LoadingSpinner';
-export type { LoadingSpinnerProps } from './LoadingSpinner';
+export { LoadingSpinner } from './common/LoadingSpinner';
+export type { LoadingSpinnerProps } from './common/LoadingSpinner';
 
-export { ErrorMessage } from './ErrorMessage';
-export type { ErrorMessageProps } from './ErrorMessage';
+export { ErrorMessage } from './common/ErrorMessage';
+export type { ErrorMessageProps } from './common/ErrorMessage';
 
-export { Pagination } from './Pagination';
-export type { PaginationProps } from './Pagination';
+export { Pagination } from './common/Pagination';
+export type { PaginationProps } from './common/Pagination';
 
-export { LazyImage } from './LazyImage';
-export type { LazyImageProps } from './LazyImage';
+export { LazyImage } from './common/LazyImage';
+export type { LazyImageProps } from './common/LazyImage';
 
-export { ClothingItemCard } from './ClothingItemCard';
-export type { ClothingItemCardProps } from './ClothingItemCard';
+export { ClothingItemCard } from './features/Closet/ClothingItemCard';
+export type { ClothingItemCardProps } from './features/Closet/ClothingItemCard';
 
-export { ClothingItemForm } from './ClothingItemForm';
-export type { ClothingItemFormProps } from './ClothingItemForm';
+export { ClothingItemForm } from './features/Closet/ClothingItemForm';
+export type { ClothingItemFormProps } from './features/Closet/ClothingItemForm';
 
-export { FilterPanel } from './FilterPanel';
-export type { FilterPanelProps } from './FilterPanel';
+export { FilterPanel } from './features/Closet/FilterPanel';
+export type { FilterPanelProps } from './features/Closet/FilterPanel';
 
-export { OutfitCard } from './OutfitCard';
-export type { OutfitCardProps } from './OutfitCard';
+export { OutfitCard } from './features/Outfits/OutfitCard';
+export type { OutfitCardProps } from './features/Outfits/OutfitCard';
 
-export { OutfitBuilder } from './OutfitBuilder';
-export type { OutfitBuilderProps } from './OutfitBuilder';
+export { OutfitBuilder } from './features/Outfits/OutfitBuilder';
+export type { OutfitBuilderProps } from './features/Outfits/OutfitBuilder';
 
-export { RecommendationCard } from './RecommendationCard';
-export type { RecommendationCardProps } from './RecommendationCard';
+export { RecommendationCard } from './features/Recommendations/RecommendationCard';
+export type { RecommendationCardProps } from './features/Recommendations/RecommendationCard';
 
-export { Logo } from './Logo';
-export type { LogoProps } from './Logo';
+export { Logo } from './common/Logo';
+export type { LogoProps } from './common/Logo';
 
 // Layout components
-export { Navigation } from './Navigation';
-export type { NavigationProps } from './Navigation';
+export { Navigation } from './layout/Navigation';
+export type { NavigationProps } from './layout/Navigation';
 
-export { MainLayout } from './MainLayout';
+export { MainLayout } from './layout/MainLayout';
 
-export { ErrorBoundary } from './ErrorBoundary';
+export { ErrorBoundary } from './layout/ErrorBoundary';
 
-export { ProtectedRoute } from './ProtectedRoute';
-export type { ProtectedRouteProps } from './ProtectedRoute';
+export { ProtectedRoute } from './layout/ProtectedRoute';
+export type { ProtectedRouteProps } from './layout/ProtectedRoute';
+
+export { ThemeSelector } from './features/Theme/ThemeSelector';
+export type { ThemeSelectorProps } from './features/Theme/ThemeSelector';

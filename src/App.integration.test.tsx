@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import App from './App';
 
 // Mock the useAuth hook
@@ -184,6 +184,137 @@ describe('App Integration Tests', () => {
 
       // The app should render without throwing
       expect(() => render(<App />)).not.toThrow();
+    });
+  });
+
+  describe('Theme Provider Integration', () => {
+    beforeEach(() => {
+      // Clear localStorage before each test
+      localStorage.clear();
+      // Clear CSS custom properties
+      document.documentElement.style.removeProperty('--color-primary');
+      document.documentElement.style.removeProperty('--color-secondary');
+      document.documentElement.style.removeProperty('--color-accent');
+      document.documentElement.style.removeProperty('--color-tertiary');
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('loads theme from localStorage on app initialization', async () => {
+      mockUseAuth.mockReturnValue({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        login: vi.fn(),
+        register: vi.fn(),
+        logout: vi.fn(),
+        updateProfile: vi.fn(),
+      });
+
+      // Set a theme in localStorage
+      const themePreference = {
+        themeId: 'blue',
+        timestamp: Date.now(),
+      };
+      localStorage.setItem('app-theme-preference', JSON.stringify(themePreference));
+
+      render(<App />);
+
+      // Wait for theme to be applied
+      await waitFor(() => {
+        const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
+        // Blue theme primary color is #3E848C
+        expect(primaryColor).toBe('#3E848C');
+      });
+    });
+
+    it('applies default theme when localStorage is empty', async () => {
+      mockUseAuth.mockReturnValue({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        login: vi.fn(),
+        register: vi.fn(),
+        logout: vi.fn(),
+        updateProfile: vi.fn(),
+      });
+
+      // Ensure localStorage is empty
+      localStorage.clear();
+
+      render(<App />);
+
+      // Wait for default theme to be applied
+      await waitFor(() => {
+        const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
+        // Brown/Tan theme (default) primary color is #F5F1E8
+        expect(primaryColor).toBe('#F5F1E8');
+      });
+    });
+
+    it('applies default theme when localStorage contains invalid theme ID', async () => {
+      mockUseAuth.mockReturnValue({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        login: vi.fn(),
+        register: vi.fn(),
+        logout: vi.fn(),
+        updateProfile: vi.fn(),
+      });
+
+      // Set invalid theme in localStorage
+      const invalidThemePreference = {
+        themeId: 'invalid-theme-id',
+        timestamp: Date.now(),
+      };
+      localStorage.setItem('app-theme-preference', JSON.stringify(invalidThemePreference));
+
+      render(<App />);
+
+      // Wait for default theme to be applied
+      await waitFor(() => {
+        const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
+        // Brown/Tan theme (default) primary color is #F5F1E8
+        expect(primaryColor).toBe('#F5F1E8');
+      });
+    });
+
+    it('applies all CSS custom properties for the loaded theme', async () => {
+      mockUseAuth.mockReturnValue({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        login: vi.fn(),
+        register: vi.fn(),
+        logout: vi.fn(),
+        updateProfile: vi.fn(),
+      });
+
+      // Set green theme in localStorage
+      const themePreference = {
+        themeId: 'green',
+        timestamp: Date.now(),
+      };
+      localStorage.setItem('app-theme-preference', JSON.stringify(themePreference));
+
+      render(<App />);
+
+      // Wait for all theme colors to be applied
+      await waitFor(() => {
+        const primary = document.documentElement.style.getPropertyValue('--color-primary');
+        const secondary = document.documentElement.style.getPropertyValue('--color-secondary');
+        const accent = document.documentElement.style.getPropertyValue('--color-accent');
+        const tertiary = document.documentElement.style.getPropertyValue('--color-tertiary');
+
+        // Green theme colors
+        expect(primary).toBe('#F4F6F1');
+        expect(secondary).toBe('#8BA888');
+        expect(accent).toBe('#4D6B4F');
+        expect(tertiary).toBe('#D4A373');
+      });
     });
   });
 });

@@ -1,11 +1,12 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { MainLayout } from './components/MainLayout';
-import { LoadingSpinner } from './components/LoadingSpinner';
-import { useAutoLogout } from './hooks/useAutoLogout';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { ErrorBoundary } from './components/layout/ErrorBoundary';
+import { ProtectedRoute } from './components/layout/ProtectedRoute';
+import { MainLayout } from './components/layout/MainLayout';
+import { LoadingSpinner } from './components/common/LoadingSpinner';
+import { useAutoLogout } from './hooks/auth/useAutoLogout';
 
 // Code-split page components using React.lazy
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -113,9 +114,11 @@ function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </ErrorBoundary>
   );

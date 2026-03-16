@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useDebounce } from './useDebounce';
+import { useDebounce } from './ui/useDebounce';
 
 // Example 1: Search input with 300ms delay
 export function SearchExample() {

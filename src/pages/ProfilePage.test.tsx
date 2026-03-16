@@ -1,12 +1,19 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ProfilePage } from './ProfilePage';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts';
 import { useClothingItems } from '../hooks/useClothingItems';
 import { useOutfits } from '../hooks/useOutfits';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 // Mock hooks
-vi.mock('../hooks/useAuth');
+vi.mock('../contexts', async () => {
+  const actual = await vi.importActual('../contexts');
+  return {
+    ...actual,
+    useAuth: vi.fn(),
+  };
+});
 vi.mock('../hooks/useClothingItems');
 vi.mock('../hooks/useOutfits');
 
@@ -76,7 +83,11 @@ describe('ProfilePage', () => {
   });
 
   it('renders profile page with user information', async () => {
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Profile')).toBeInTheDocument();
@@ -88,7 +99,11 @@ describe('ProfilePage', () => {
   });
 
   it('displays account statistics', async () => {
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Account Statistics')).toBeInTheDocument();
@@ -101,7 +116,11 @@ describe('ProfilePage', () => {
   });
 
   it('fetches statistics on mount', async () => {
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(mockFetchItems).toHaveBeenCalledWith(undefined, 0);
@@ -110,7 +129,11 @@ describe('ProfilePage', () => {
   });
 
   it('shows loading state while fetching statistics', () => {
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     // Check for the loading spinner by class name
     const spinner = document.querySelector('.animate-spin');
@@ -124,7 +147,11 @@ describe('ProfilePage', () => {
       lastName: 'Smith',
     });
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
@@ -158,7 +185,11 @@ describe('ProfilePage', () => {
       },
     });
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
@@ -177,7 +208,11 @@ describe('ProfilePage', () => {
       () => new Promise((resolve) => setTimeout(resolve, 100))
     );
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
@@ -191,7 +226,11 @@ describe('ProfilePage', () => {
   });
 
   it('validates required fields', async () => {
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
@@ -211,7 +250,11 @@ describe('ProfilePage', () => {
   });
 
   it('validates email format', async () => {
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('test@example.com')).toBeInTheDocument();
@@ -232,7 +275,11 @@ describe('ProfilePage', () => {
   });
 
   it('calls logout when logout button is clicked', async () => {
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Profile')).toBeInTheDocument();
@@ -253,7 +300,11 @@ describe('ProfilePage', () => {
       },
     });
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
@@ -283,7 +334,11 @@ describe('ProfilePage', () => {
       updateProfile: vi.fn(),
     });
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     expect(screen.getByText('Loading profile...')).toBeInTheDocument();
   });
@@ -292,7 +347,11 @@ describe('ProfilePage', () => {
     mockFetchItems.mockRejectedValue(new Error('Network error'));
     mockFetchOutfits.mockRejectedValue(new Error('Network error'));
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     // Should still render the page even if stats fail
     await waitFor(() => {
@@ -308,7 +367,11 @@ describe('ProfilePage', () => {
       () => new Promise((resolve) => setTimeout(resolve, 100))
     );
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
@@ -329,7 +392,11 @@ describe('ProfilePage', () => {
   it('shows success message after profile update', async () => {
     mockUpdateProfile.mockResolvedValue(mockUser);
 
-    render(<ProfilePage />);
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('John')).toBeInTheDocument();
@@ -341,5 +408,200 @@ describe('ProfilePage', () => {
     await waitFor(() => {
       expect(screen.getByText('Profile updated successfully')).toBeInTheDocument();
     });
+  });
+});
+
+/**
+ * Integration tests for ProfilePage theme selector
+ * Validates: Requirements 1.1, 2.1
+ */
+describe('ProfilePage - Theme Selector Integration', () => {
+  const mockUser = {
+    id: 1,
+    email: 'test@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  };
+
+  const mockUpdateProfile = vi.fn();
+  const mockLogout = vi.fn();
+  const mockFetchItems = vi.fn();
+  const mockFetchOutfits = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+
+    vi.mocked(useAuth).mockReturnValue({
+      user: mockUser,
+      isAuthenticated: true,
+      isLoading: false,
+      login: vi.fn(),
+      register: vi.fn(),
+      logout: mockLogout,
+      updateProfile: mockUpdateProfile,
+    });
+
+    vi.mocked(useClothingItems).mockReturnValue({
+      items: [],
+      pagination: {
+        page: 0,
+        size: 20,
+        totalPages: 1,
+        totalElements: 15,
+      },
+      isLoading: false,
+      error: null,
+      fetchItems: mockFetchItems,
+      createItem: vi.fn(),
+      updateItem: vi.fn(),
+      deleteItem: vi.fn(),
+      uploadPhoto: vi.fn(),
+    });
+
+    vi.mocked(useOutfits).mockReturnValue({
+      outfits: [],
+      pagination: {
+        page: 0,
+        size: 20,
+        totalPages: 1,
+        totalElements: 8,
+      },
+      isLoading: false,
+      error: null,
+      fetchOutfits: mockFetchOutfits,
+      createOutfit: vi.fn(),
+      updateOutfit: vi.fn(),
+      deleteOutfit: vi.fn(),
+    });
+
+    mockFetchItems.mockResolvedValue(undefined);
+    mockFetchOutfits.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('renders ThemeSelector in ProfilePage', async () => {
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Theme Preferences')).toBeInTheDocument();
+    });
+
+    // Verify theme selector is rendered with theme options
+    const themeButtons = screen.getAllByRole('button', { name: /select.*theme/i });
+    expect(themeButtons.length).toBeGreaterThan(0);
+  });
+
+  it('displays all theme options in ProfilePage', async () => {
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Theme Preferences')).toBeInTheDocument();
+    });
+
+    // Verify all three themes are displayed
+    expect(screen.getByLabelText(/select brown\/tan theme/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/select blue theme/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/select green theme/i)).toBeInTheDocument();
+  });
+
+  it('updates application colors when theme is selected', async () => {
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Theme Preferences')).toBeInTheDocument();
+    });
+
+    // Get the blue theme button
+    const blueThemeButton = screen.getByLabelText(/select blue theme/i);
+
+    // Click to select blue theme
+    fireEvent.click(blueThemeButton);
+
+    // Verify CSS custom properties are updated
+    await waitFor(() => {
+      const root = document.documentElement;
+      const primaryColor = root.style.getPropertyValue('--color-primary');
+      expect(primaryColor).toBe('#3E848C'); // Blue theme primary color
+    });
+  });
+
+  it('persists theme selection to localStorage', async () => {
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Theme Preferences')).toBeInTheDocument();
+    });
+
+    // Select green theme
+    const greenThemeButton = screen.getByLabelText(/select green theme/i);
+    fireEvent.click(greenThemeButton);
+
+    // Verify theme is persisted to localStorage
+    await waitFor(() => {
+      const stored = localStorage.getItem('app-theme-preference');
+      expect(stored).toBeTruthy();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.themeId).toBe('green');
+    });
+  });
+
+  it('highlights the currently selected theme', async () => {
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Theme Preferences')).toBeInTheDocument();
+    });
+
+    // Select blue theme
+    const blueThemeButton = screen.getByLabelText(/select blue theme/i);
+    fireEvent.click(blueThemeButton);
+
+    // Verify blue theme button is highlighted (aria-pressed)
+    await waitFor(() => {
+      expect(blueThemeButton).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
+  it('applies default theme on initial load', async () => {
+    render(
+      <ThemeProvider>
+        <ProfilePage />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Theme Preferences')).toBeInTheDocument();
+    });
+
+    // Verify default theme (brown-tan) is applied
+    const root = document.documentElement;
+    const primaryColor = root.style.getPropertyValue('--color-primary');
+    expect(primaryColor).toBe('#F5F1E8'); // Brown/Tan theme primary color
   });
 });

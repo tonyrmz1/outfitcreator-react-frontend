@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../contexts';
 import { registerSchema } from '../schemas/auth.schemas';
-import { Input } from '../components/Input';
-import { Button } from '../components/Button';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { Logo } from '../components/Logo';
+import { Input } from '../components/common/Input';
+import { Button } from '../components/common/Button';
+import { ErrorMessage } from '../components/common/ErrorMessage';
+import { Logo } from '../components/common/Logo';
 import type { RegisterFormData } from '../types';
 
 /**
