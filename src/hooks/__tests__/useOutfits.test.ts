@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useOutfits } from './useOutfits';
-import outfitsAPI from '../../api/outfits';
+import { useOutfits } from '../data/useOutfits';
+import outfitsAPI from '../../api/endpoints/outfits';
 import type { Outfit, OutfitFormData, ItemPosition, PaginatedResponse } from '../../types';
 
 // Mock the API

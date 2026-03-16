@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import outfitsAPI from './outfits';
+import outfitsAPI from '../endpoints/outfits';
 import apiClient from '../client';
 import type { Outfit, OutfitFormData, PaginatedResponse } from '../../types';
 import { ClothingCategory, ItemPosition, Season } from '../../types';

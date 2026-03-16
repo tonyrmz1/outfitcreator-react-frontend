@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useRecommendations } from './useRecommendations';
-import recommendationsAPI from '../../api/recommendations';
+import { useRecommendations } from '../data/useRecommendations';
+import recommendationsAPI from '../../api/endpoints/recommendations';
 import {
   ClothingCategory,
   Season,

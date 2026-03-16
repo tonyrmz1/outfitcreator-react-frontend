@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { useAuth } from './useAuth';
-import authAPI from '../../api/auth';
+import { useAuth } from '../auth/useAuth';
+import authAPI from '../../api/endpoints/auth';
 import type { User, LoginResponse } from '../../types';
 
 // Mock the authAPI
