@@ -34,7 +34,8 @@ export function useAuth(): UseAuthReturn {
   const login = async (credentials: LoginRequest): Promise<void> => {
     const response = await authAPI.login(credentials);
     setToken(response.token);
-    setUser(response.user);
+    const profile = await authAPI.getProfile();
+    setUser(profile);
   };
 
   const register = async (data: RegisterRequest): Promise<void> => {

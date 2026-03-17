@@ -116,14 +116,14 @@ export const ClothingItemCard: React.FC<ClothingItemCardProps> = React.memo(({
           <div className="flex items-center gap-1">
             <div
               className="w-6 h-6 rounded-full border-2 border-gray-300"
-              style={{ backgroundColor: item.primaryColor }}
+              style={{ backgroundColor: /^#[0-9a-fA-F]{3,6}$|^[a-zA-Z]+$/.test(item.primaryColor) ? item.primaryColor : '#e5e7eb' }}
               title={`Primary color: ${item.primaryColor}`}
               aria-label={`Primary color: ${item.primaryColor}`}
             />
             {item.secondaryColor && (
               <div
                 className="w-6 h-6 rounded-full border-2 border-gray-300"
-                style={{ backgroundColor: item.secondaryColor }}
+                style={{ backgroundColor: /^#[0-9a-fA-F]{3,6}$|^[a-zA-Z]+$/.test(item.secondaryColor) ? item.secondaryColor : '#e5e7eb' }}
                 title={`Secondary color: ${item.secondaryColor}`}
                 aria-label={`Secondary color: ${item.secondaryColor}`}
               />

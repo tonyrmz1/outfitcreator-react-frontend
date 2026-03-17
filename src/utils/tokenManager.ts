@@ -70,6 +70,12 @@ export function getToken(): string | null {
       return null;
     }
 
+    // Remove expired tokens so they are never sent to the backend
+    if (isTokenExpired(token) === true) {
+      removeToken();
+      return null;
+    }
+
     return token;
   } catch (error) {
     console.error('Failed to retrieve token');

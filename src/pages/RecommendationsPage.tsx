@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRecommendations } from '../hooks/data/useRecommendations';
+import { useOutfits } from '../hooks/data/useOutfits';
 import { RecommendationCard } from '../components/features/Recommendations/RecommendationCard';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
@@ -20,6 +21,7 @@ import { Season, type OutfitRecommendation, type RecommendationFilters } from '.
  * Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 13.2, 14.1, 14.3
  */
 export const RecommendationsPage: React.FC = () => {
+  const { createOutfit } = useOutfits();
   const {
     recommendations,
     isLoading,
@@ -68,7 +70,7 @@ export const RecommendationsPage: React.FC = () => {
     
     if (name && name.trim()) {
       try {
-        await saveRecommendation(recommendation, name.trim());
+        await saveRecommendation(recommendation, name.trim(), createOutfit);
         setSuccessMessage(`Outfit "${name.trim()}" saved successfully!`);
         
         // Clear success message after 3 seconds

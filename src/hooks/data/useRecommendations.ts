@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import recommendationsAPI from '../../api/endpoints/recommendations';
-import { useOutfits } from './useOutfits';
 import type {
   OutfitRecommendation,
   RecommendationFilters,
@@ -14,18 +13,19 @@ interface UseRecommendationsReturn {
   isLoading: boolean;
   error: string | null;
   fetchRecommendations: (filters: RecommendationFilters) => Promise<void>;
-  saveRecommendation: (recommendation: OutfitRecommendation, name: string) => Promise<Outfit>;
+  saveRecommendation: (recommendation: OutfitRecommendation, name: string, createOutfit: (data: OutfitFormData) => Promise<Outfit>) => Promise<Outfit>;
 }
 
 /**
- * Custom hook for managing outfit recommendations
+ * Custom hook for managing outfit recommendations.
+ * saveRecommendation accepts a createOutfit function from the caller so it
+ * shares the same useOutfits instance and state as the rest of the page.
  * Requirements: 9.1, 9.8
  */
 export function useRecommendations(): UseRecommendationsReturn {
   const [recommendations, setRecommendations] = useState<OutfitRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { createOutfit } = useOutfits();
 
   /**
    * Fetch outfit recommendations based on filters
@@ -55,9 +55,9 @@ export function useRecommendations(): UseRecommendationsReturn {
    */
   const saveRecommendation = async (
     recommendation: OutfitRecommendation,
-    name: string
+    name: string,
+    createOutfit: (data: OutfitFormData) => Promise<Outfit>
   ): Promise<Outfit> => {
-    // Convert recommendation to outfit format
     const outfitData: OutfitFormData = {
       name,
       notes: recommendation.explanation,
