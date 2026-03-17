@@ -36,8 +36,7 @@ export function RegisterPage() {
     try {
       setAuthError(null);
       await registerUser(data);
-      // Auto-login happens in useAuth, force hard redirect to ensure auth state is initialized
-      window.location.href = '/closet';
+      navigate('/closet', { replace: true });
     } catch (error: any) {
       const message =
         error.response?.data?.message ||

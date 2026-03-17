@@ -35,8 +35,7 @@ export function LoginPage() {
     try {
       setAuthError(null);
       await login(data);
-      // Force a hard redirect to ensure auth state is properly initialized
-      window.location.href = '/closet';
+      navigate('/closet', { replace: true });
     } catch (error: any) {
       const message = error.response?.data?.message || 'Invalid email or password';
       setAuthError(message);

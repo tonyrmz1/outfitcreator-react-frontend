@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import clothingItemsAPI from '../../api/endpoints/clothing';
 import type {
   ClothingItem,
@@ -30,14 +30,14 @@ export function useClothingItems(): UseClothingItemsReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchItems = async (filters?: ClothingItemFilters, page = 0): Promise<void> => {
+  const fetchItems = useCallback(async (filters?: ClothingItemFilters, page = 0): Promise<void> => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await clothingItemsAPI.getAll(filters, page, pagination.size);
       setItems(response.content);
       setPagination({
-        page: response.page,
+        page: response.number,
         size: response.size,
         totalPages: response.totalPages,
         totalElements: response.totalElements,
@@ -49,7 +49,7 @@ export function useClothingItems(): UseClothingItemsReturn {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [pagination.size]);
 
   const createItem = async (data: ClothingItemFormData, photo?: File): Promise<ClothingItem> => {
     // Optimistic update: create temporary item

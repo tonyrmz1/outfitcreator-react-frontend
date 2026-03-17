@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal } from '../../common/Modal';
 import { Input } from '../../common/Input';
 import { Button } from '../../common/Button';
+import { ErrorMessage } from '../../common/ErrorMessage';
 import { useClothingItems } from '../../../hooks/data/useClothingItems';
 import { validateOutfit } from '../../../utils/validation';
 import type {
@@ -25,7 +26,7 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
   onSave,
   editingOutfit,
 }) => {
-  const { items, fetchItems, isLoading: itemsLoading } = useClothingItems();
+  const { items, fetchItems, isLoading: itemsLoading, error: itemsError } = useClothingItems();
   const [outfitName, setOutfitName] = useState('');
   const [outfitNotes, setOutfitNotes] = useState('');
   const [selectedItems, setSelectedItems] = useState<OutfitItemSelection[]>([]);
@@ -37,7 +38,7 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
     if (isOpen) {
       fetchItems();
     }
-  }, [isOpen]);
+  }, [isOpen, fetchItems]);
 
   // Initialize form with editing outfit data
   useEffect(() => {
@@ -217,7 +218,7 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
                     <div className="flex-1 flex flex-col">
                       <div className="relative flex-1 mb-2">
                         <img
-                          src={selectedItem.photoUrl || '/placeholder-image.png'}
+                          src={selectedItem.photoUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect fill="%23e5e7eb" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="16" fill="%239ca3af"%3ENo Photo%3C/text%3E%3C/svg%3E'}
                           alt={selectedItem.name}
                           className="w-full h-16 object-cover rounded"
                         />
@@ -251,7 +252,9 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
           <h3 className="text-lg font-semibold text-gray-900 mb-3">
             Available Items
           </h3>
-          {itemsLoading ? (
+          {itemsError ? (
+            <ErrorMessage message="Failed to load clothing items. Please try again." />
+          ) : itemsLoading ? (
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
             </div>
@@ -284,7 +287,7 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
                         >
                           <div className="aspect-square mb-1">
                             <img
-                              src={item.photoUrl || '/placeholder-image.png'}
+                              src={item.photoUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect fill="%23e5e7eb" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="16" fill="%239ca3af"%3ENo Photo%3C/text%3E%3C/svg%3E'}
                               alt={item.name}
                               className="w-full h-full object-cover rounded"
                             />
