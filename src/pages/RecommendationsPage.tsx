@@ -6,6 +6,7 @@ import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorMessage } from '../components/common/ErrorMessage';
 import { Select } from '../components/common/Select';
 import { Input } from '../components/common/Input';
+import { NameOutfitModal } from '../components/common/NameOutfitModal';
 import { Season, type OutfitRecommendation, type RecommendationFilters } from '../types';
 
 /**
@@ -35,6 +36,8 @@ export const RecommendationsPage: React.FC = () => {
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pendingRecommendation, setPendingRecommendation] = useState<OutfitRecommendation | null>(null);
 
   // Fetch recommendations on mount and when filters change
   useEffect(() => {
@@ -65,23 +68,28 @@ export const RecommendationsPage: React.FC = () => {
     }
   };
 
-  const handleSaveRecommendation = async (recommendation: OutfitRecommendation) => {
-    const name = window.prompt('Enter a name for this outfit:');
-    
-    if (name && name.trim()) {
-      try {
-        await saveRecommendation(recommendation, name.trim(), createOutfit);
-        setSuccessMessage(`Outfit "${name.trim()}" saved successfully!`);
-        
-        // Clear success message after 3 seconds
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 3000);
-      } catch (err) {
-        console.error('Failed to save recommendation:', err);
-        // Error handling is delegated to the hook
-      }
+  const handleSaveRecommendation = (recommendation: OutfitRecommendation) => {
+    setPendingRecommendation(recommendation);
+    setModalOpen(true);
+  };
+
+  const handleModalConfirm = async (name: string) => {
+    setModalOpen(false);
+    if (!pendingRecommendation) return;
+    try {
+      await saveRecommendation(pendingRecommendation, name, createOutfit);
+      setSuccessMessage(`Outfit "${name}" saved successfully!`);
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err) {
+      console.error('Failed to save recommendation:', err);
+    } finally {
+      setPendingRecommendation(null);
     }
+  };
+
+  const handleModalCancel = () => {
+    setModalOpen(false);
+    setPendingRecommendation(null);
   };
 
   const handleRetry = () => {
@@ -212,6 +220,13 @@ export const RecommendationsPage: React.FC = () => {
           ))}
         </div>
       )}
+
+      {/* Name Outfit Modal */}
+      <NameOutfitModal
+        isOpen={modalOpen}
+        onConfirm={handleModalConfirm}
+        onCancel={handleModalCancel}
+      />
 
       {/* Empty State */}
       {!isLoading && recommendations.length === 0 && !error && (
