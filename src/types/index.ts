@@ -94,7 +94,7 @@ export interface ApiResponse<T> {
 
 export interface PaginatedResponse<T> {
   content: T[];
-  page: number;
+  number: number;   // Spring Boot serializes current page as 'number'
   size: number;
   totalElements: number;
   totalPages: number;
