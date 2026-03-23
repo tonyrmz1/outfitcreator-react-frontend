@@ -31,7 +31,7 @@ export function useOutfits(): UseOutfitsReturn {
       const response = await outfitsAPI.getAll(page, pagination.size);
       setOutfits(response.content);
       setPagination({
-        page: response.page,
+        page: response.number,
         size: response.size,
         totalPages: response.totalPages,
         totalElements: response.totalElements,
