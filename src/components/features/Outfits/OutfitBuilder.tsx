@@ -203,27 +203,43 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
           <h3 className="text-lg font-semibold text-gray-900 mb-3">
             Selected Items
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
             {positionSlots.map((position) => {
               const selectedItem = getSelectedItemForPosition(position);
               return (
                 <div
                   key={position}
-                  className="border-2 border-dashed border-gray-300 rounded-lg p-3 min-h-[120px] flex flex-col"
+                  className={`flex flex-col rounded-lg bg-gray-50 p-2 transition-all ${
+                    !selectedItem ? 'min-h-[120px]' : ''
+                  }`}
                 >
-                  <div className="text-xs font-medium text-gray-600 mb-2">
+                  <div className="mb-1 text-xs font-medium text-gray-600">
                     {position}
                   </div>
                   {selectedItem ? (
-                    <div className="flex-1 flex flex-col">
-                      <div className="relative flex-1 mb-2">
+                    <div className="flex flex-col">
+                      {/* Same image frame as Available Items: square, full-width, object-cover */}
+                      <div className="relative mb-1 aspect-square w-full overflow-hidden rounded-md">
                         <img
                           src={selectedItem.photoUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect fill="%23e5e7eb" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="16" fill="%239ca3af"%3ENo Photo%3C/text%3E%3C/svg%3E'}
                           alt={selectedItem.name}
-                          className="w-full h-16 object-cover rounded"
+                          className="h-full w-full object-cover"
                         />
+                        <span
+                          className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-white shadow-md ring-2 ring-white"
+                          title="Slot filled"
+                          aria-hidden
+                        >
+                          <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </span>
                       </div>
-                      <div className="text-xs text-gray-700 truncate mb-1">
+                      <div className="mb-1 truncate text-xs font-medium text-gray-700">
                         {selectedItem.name}
                       </div>
                       <Button
@@ -256,7 +272,7 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
             <ErrorMessage message="Failed to load clothing items. Please try again." />
           ) : itemsLoading ? (
             <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
             </div>
           ) : items.length === 0 ? (
             <p className="text-sm text-gray-500 text-center py-8">
@@ -275,41 +291,66 @@ export const OutfitBuilder: React.FC<OutfitBuilderProps> = ({
                       return (
                         <button
                           key={item.id}
+                          type="button"
                           onClick={() => handleItemSelect(item)}
                           disabled={isSaving}
-                          className={`relative border-2 rounded-lg p-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+                          className={`relative rounded-lg p-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                             selected
-                              ? 'border-primary-600 bg-primary-50'
-                              : 'border-gray-200 hover:border-gray-300'
+                              ? 'z-[1] border-2 border-secondary bg-tertiary/40 shadow-sm'
+                              : 'border-2 border-gray-200 hover:border-gray-300 hover:shadow-sm'
                           }`}
-                          aria-label={`Select ${item.name}`}
+                          aria-label={
+                            selected
+                              ? `${item.name} — selected in this outfit, tap to change`
+                              : `Select ${item.name} for this outfit`
+                          }
                           aria-pressed={selected}
                         >
-                          <div className="aspect-square mb-1">
+                          <div className="relative mb-1 aspect-square overflow-hidden rounded-md">
                             <img
                               src={item.photoUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect fill="%23e5e7eb" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="16" fill="%239ca3af"%3ENo Photo%3C/text%3E%3C/svg%3E'}
-                              alt={item.name}
-                              className="w-full h-full object-cover rounded"
+                              alt=""
+                              aria-hidden
+                              className={`h-full w-full object-cover transition-[filter] ${
+                                selected ? 'brightness-[0.97]' : ''
+                              }`}
                             />
+                            {selected && (
+                              <>
+                                <div
+                                  className="pointer-events-none absolute inset-0 bg-primary/15"
+                                  aria-hidden
+                                />
+                                <div
+                                  className="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-white shadow-md ring-2 ring-white"
+                                  aria-hidden
+                                >
+                                  <svg
+                                    className="h-3.5 w-3.5"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </>
+                            )}
                           </div>
-                          <div className="text-xs text-gray-700 truncate">
+                          <div
+                            className={`truncate text-xs font-medium ${
+                              selected ? 'text-secondary' : 'text-gray-700'
+                            }`}
+                          >
                             {item.name}
                           </div>
                           {selected && (
-                            <div className="absolute top-1 right-1 bg-primary-600 text-white rounded-full p-1">
-                              <svg
-                                className="w-3 h-3"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
+                            <div className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-secondary">
+                              In outfit
                             </div>
                           )}
                         </button>

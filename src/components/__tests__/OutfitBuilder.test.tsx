@@ -127,7 +127,7 @@ describe('OutfitBuilder', () => {
       />
     );
 
-    const shirtButton = screen.getByLabelText('Select Blue Shirt');
+    const shirtButton = screen.getByRole('button', { name: /Blue Shirt/ });
     fireEvent.click(shirtButton);
 
     await waitFor(() => {
@@ -176,7 +176,7 @@ describe('OutfitBuilder', () => {
     );
 
     // Select first shirt
-    const blueShirtButton = screen.getByLabelText('Select Blue Shirt');
+    const blueShirtButton = screen.getByRole('button', { name: /Blue Shirt/ });
     fireEvent.click(blueShirtButton);
 
     await waitFor(() => {
@@ -184,7 +184,7 @@ describe('OutfitBuilder', () => {
     });
 
     // Select second shirt (should replace first)
-    const redShirtButton = screen.getByLabelText('Select Red Shirt');
+    const redShirtButton = screen.getByRole('button', { name: /Red Shirt/ });
     fireEvent.click(redShirtButton);
 
     await waitFor(() => {
@@ -252,10 +252,10 @@ describe('OutfitBuilder', () => {
     fireEvent.change(nameInput, { target: { value: 'Casual Friday' } });
 
     // Select items
-    const shirtButton = screen.getByLabelText('Select Blue Shirt');
+    const shirtButton = screen.getByRole('button', { name: /Blue Shirt/ });
     fireEvent.click(shirtButton);
 
-    const jeansButton = screen.getByLabelText('Select Black Jeans');
+    const jeansButton = screen.getByRole('button', { name: /Black Jeans/ });
     fireEvent.click(jeansButton);
 
     // Save outfit
@@ -392,7 +392,7 @@ describe('OutfitBuilder', () => {
     );
 
     // Select an item
-    const shirtButton = screen.getByLabelText('Select Blue Shirt');
+    const shirtButton = screen.getByRole('button', { name: /Blue Shirt/ });
     fireEvent.click(shirtButton);
 
     await waitFor(() => {
