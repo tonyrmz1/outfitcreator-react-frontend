@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fc from 'fast-check';
-import { Input } from './Input';
+import { Input } from '../common/Input';
 
 describe('Input Component - Property-Based Tests', () => {
   afterEach(() => {

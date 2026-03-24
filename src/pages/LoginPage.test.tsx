@@ -2,13 +2,18 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { LoginPage } from './LoginPage';
-import * as useAuthModule from '../hooks/useAuth';
 
-// Mock the useAuth hook
 const mockLogin = vi.fn();
 const mockNavigate = vi.fn();
+const mockUseAuth = vi.fn();
 
-vi.mock('../hooks/useAuth');
+vi.mock('../contexts', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../contexts')>();
+  return {
+    ...actual,
+    useAuth: () => mockUseAuth(),
+  };
+});
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
@@ -20,7 +25,7 @@ vi.mock('react-router-dom', async () => {
 describe('LoginPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(useAuthModule, 'useAuth').mockReturnValue({
+    mockUseAuth.mockReturnValue({
       user: null,
       isAuthenticated: false,
       isLoading: false,
@@ -109,7 +114,7 @@ describe('LoginPage', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/closet');
+      expect(mockNavigate).toHaveBeenCalledWith('/closet', { replace: true });
     });
   });
 

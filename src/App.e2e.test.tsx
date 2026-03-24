@@ -1,17 +1,15 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import App from './App';
+import { THEMES } from './types/theme';
 
-// Mock the useAuth hook
 const mockUseAuth = vi.fn();
 
-vi.mock('./hooks/useAuth', () => ({
+vi.mock('./hooks/auth/useAuth', () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-// Mock the useAutoLogout hook
-vi.mock('./hooks/useAutoLogout', () => ({
+vi.mock('./hooks/auth/useAutoLogout', () => ({
   useAutoLogout: vi.fn(),
 }));
 
@@ -41,6 +39,12 @@ vi.mock('./pages/ProfilePage', () => ({
 }));
 
 describe('App E2E Integration Tests - Theme Color Selector', () => {
+  const T = {
+    brown: THEMES['brown-tan'].colors,
+    blue: THEMES.blue.colors,
+    green: THEMES.green.colors,
+  };
+
   const authenticatedUser = {
     user: { id: 1, email: 'test@example.com', firstName: 'John', lastName: 'Doe' },
     isAuthenticated: true,
@@ -54,6 +58,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    window.history.pushState({}, '', '/');
     // Clear CSS custom properties
     document.documentElement.style.removeProperty('--color-primary');
     document.documentElement.style.removeProperty('--color-secondary');
@@ -93,7 +98,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for app to initialize with default theme (Brown/Tan)
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8'); // Brown/Tan default
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Simulate selecting Blue theme via storage event (since we can't interact with mocked ProfilePage)
@@ -118,11 +123,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Blue theme colors
-        expect(primaryColor).toBe('#3E848C');
-        expect(secondaryColor).toBe('#025159');
-        expect(accentColor).toBe('#A67458');
-        expect(tertiaryColor).toBe('#C4EEF2');
+        expect(primaryColor).toBe(T.blue.primary);
+        expect(secondaryColor).toBe(T.blue.secondary);
+        expect(accentColor).toBe(T.blue.accent);
+        expect(tertiaryColor).toBe(T.blue.tertiary);
       });
     });
 
@@ -134,7 +138,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for default theme to be applied
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Select Green theme
@@ -157,11 +161,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accent = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiary = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Green theme colors
-        expect(primary).toBe('#F4F6F1');
-        expect(secondary).toBe('#8BA888');
-        expect(accent).toBe('#4D6B4F');
-        expect(tertiary).toBe('#D4A373');
+        expect(primary).toBe(T.green.primary);
+        expect(secondary).toBe(T.green.secondary);
+        expect(accent).toBe(T.green.accent);
+        expect(tertiary).toBe(T.green.tertiary);
       });
     });
   });
@@ -175,7 +178,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for app to initialize
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Select Blue theme
@@ -221,11 +224,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Blue theme colors
-        expect(primaryColor).toBe('#3E848C');
-        expect(secondaryColor).toBe('#025159');
-        expect(accentColor).toBe('#A67458');
-        expect(tertiaryColor).toBe('#C4EEF2');
+        expect(primaryColor).toBe(T.blue.primary);
+        expect(secondaryColor).toBe(T.blue.secondary);
+        expect(accentColor).toBe(T.blue.accent);
+        expect(tertiaryColor).toBe(T.blue.tertiary);
       });
     });
 
@@ -244,11 +246,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Brown/Tan default theme colors
-        expect(primaryColor).toBe('#F5F1E8');
-        expect(secondaryColor).toBe('#8B7355');
-        expect(accentColor).toBe('#3D3D2D');
-        expect(tertiaryColor).toBe('#C89B7B');
+        expect(primaryColor).toBe(T.brown.primary);
+        expect(secondaryColor).toBe(T.brown.secondary);
+        expect(accentColor).toBe(T.brown.accent);
+        expect(tertiaryColor).toBe(T.brown.tertiary);
       });
     });
   });
@@ -262,7 +263,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for default theme
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Change to Blue theme
@@ -281,7 +282,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Verify Blue theme is applied
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#3E848C');
+        expect(primaryColor).toBe(T.blue.primary);
       });
 
       // Change to Green theme
@@ -304,11 +305,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Green theme colors
-        expect(primaryColor).toBe('#F4F6F1');
-        expect(secondaryColor).toBe('#8BA888');
-        expect(accentColor).toBe('#4D6B4F');
-        expect(tertiaryColor).toBe('#D4A373');
+        expect(primaryColor).toBe(T.green.primary);
+        expect(secondaryColor).toBe(T.green.secondary);
+        expect(accentColor).toBe(T.green.accent);
+        expect(tertiaryColor).toBe(T.green.tertiary);
       });
 
       // Change back to Blue theme
@@ -323,7 +323,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Verify Blue theme is applied again (consistency)
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#3E848C');
+        expect(primaryColor).toBe(T.blue.primary);
       });
     });
   });
@@ -337,7 +337,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for default theme
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Attempt to set invalid theme
@@ -356,8 +356,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Verify current theme remains unchanged (default theme)
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        // Should still be default theme
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
     });
   });
@@ -371,7 +370,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for default theme
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Simulate theme change in another tab via storage event
@@ -394,11 +393,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Blue theme colors
-        expect(primaryColor).toBe('#3E848C');
-        expect(secondaryColor).toBe('#025159');
-        expect(accentColor).toBe('#A67458');
-        expect(tertiaryColor).toBe('#C4EEF2');
+        expect(primaryColor).toBe(T.blue.primary);
+        expect(secondaryColor).toBe(T.blue.secondary);
+        expect(accentColor).toBe(T.blue.accent);
+        expect(tertiaryColor).toBe(T.blue.tertiary);
       });
     });
 
@@ -410,7 +408,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for default theme
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Simulate rapid theme changes from another tab
@@ -435,7 +433,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Verify final theme (Blue) is applied
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#3E848C');
+        expect(primaryColor).toBe(T.blue.primary);
       });
     });
   });
@@ -456,11 +454,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Brown/Tan default theme colors
-        expect(primaryColor).toBe('#F5F1E8');
-        expect(secondaryColor).toBe('#8B7355');
-        expect(accentColor).toBe('#3D3D2D');
-        expect(tertiaryColor).toBe('#C89B7B');
+        expect(primaryColor).toBe(T.brown.primary);
+        expect(secondaryColor).toBe(T.brown.secondary);
+        expect(accentColor).toBe(T.brown.accent);
+        expect(tertiaryColor).toBe(T.brown.tertiary);
       });
     });
 
@@ -483,11 +480,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Brown/Tan default theme colors
-        expect(primaryColor).toBe('#F5F1E8');
-        expect(secondaryColor).toBe('#8B7355');
-        expect(accentColor).toBe('#3D3D2D');
-        expect(tertiaryColor).toBe('#C89B7B');
+        expect(primaryColor).toBe(T.brown.primary);
+        expect(secondaryColor).toBe(T.brown.secondary);
+        expect(accentColor).toBe(T.brown.accent);
+        expect(tertiaryColor).toBe(T.brown.tertiary);
       });
     });
 
@@ -502,12 +498,12 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Wait for default theme to be applied
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
-      // Verify corrupted data is handled gracefully
-      // (The app should still be functional and render the profile page for authenticated user)
-      expect(screen.getByTestId('profile-page')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId('closet-page')).toBeInTheDocument();
+      });
     });
   });
 
@@ -520,7 +516,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
 
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#F5F1E8'); // Default Brown/Tan
+        expect(primaryColor).toBe(T.brown.primary);
       });
 
       // Step 2: User selects Blue theme
@@ -539,7 +535,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
       // Step 3: Verify colors update immediately
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#3E848C'); // Blue theme
+        expect(primaryColor).toBe(T.blue.primary);
       });
 
       // Step 4: Verify theme is persisted to localStorage
@@ -567,11 +563,10 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
         const accentColor = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiaryColor = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Blue theme colors should be applied
-        expect(primaryColor).toBe('#3E848C');
-        expect(secondaryColor).toBe('#025159');
-        expect(accentColor).toBe('#A67458');
-        expect(tertiaryColor).toBe('#C4EEF2');
+        expect(primaryColor).toBe(T.blue.primary);
+        expect(secondaryColor).toBe(T.blue.secondary);
+        expect(accentColor).toBe(T.blue.accent);
+        expect(tertiaryColor).toBe(T.blue.tertiary);
       });
     });
   });
@@ -591,7 +586,7 @@ describe('App E2E Integration Tests - Theme Color Selector', () => {
 
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        expect(primaryColor).toBe('#3E848C');
+        expect(primaryColor).toBe(T.blue.primary);
       });
 
       const endTime = performance.now();

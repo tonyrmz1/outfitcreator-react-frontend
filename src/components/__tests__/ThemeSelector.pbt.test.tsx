@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import fc from 'fast-check';
-import { ThemeSelector } from './ThemeSelector';
+import { ThemeSelector } from '../features/Theme/ThemeSelector';
 import { ThemeProvider } from '../../contexts/ThemeContext';
 import { THEMES } from '../../types/theme';
 

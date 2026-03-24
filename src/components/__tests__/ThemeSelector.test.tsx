@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { ThemeSelector } from './ThemeSelector';
+import { ThemeSelector } from '../features/Theme/ThemeSelector';
 import { ThemeProvider } from '../../contexts/ThemeContext';
 import { THEMES } from '../../types/theme';
 

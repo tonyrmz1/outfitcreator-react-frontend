@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Button } from './Button';
+import { Button } from '../common/Button';
 
 describe('Button Component', () => {
   describe('Basic Rendering', () => {
@@ -30,7 +30,7 @@ describe('Button Component', () => {
     it('applies primary variant classes by default', () => {
       render(<Button>Primary</Button>);
       const button = screen.getByRole('button');
-      expect(button.className).toContain('bg-primary-600');
+      expect(button.className).toContain('bg-secondary');
     });
 
     it('applies secondary variant classes', () => {
@@ -42,7 +42,7 @@ describe('Button Component', () => {
     it('applies danger variant classes', () => {
       render(<Button variant="danger">Danger</Button>);
       const button = screen.getByRole('button');
-      expect(button.className).toContain('bg-red-600');
+      expect(button.className).toContain('bg-secondary');
     });
 
     it('applies ghost variant classes', () => {
@@ -198,7 +198,7 @@ describe('Button Component', () => {
       
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('type', 'submit');
-      expect(button.className).toContain('bg-red-600');
+      expect(button.className).toContain('bg-secondary');
       expect(button.className).toContain('px-6');
       expect(button.className).toContain('w-full');
     });

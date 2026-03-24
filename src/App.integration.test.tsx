@@ -1,16 +1,16 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import App from './App';
+import { THEMES } from './types/theme';
 
-// Mock the useAuth hook
+// AuthProvider reads auth state from hooks/auth/useAuth — mock that module.
 const mockUseAuth = vi.fn();
 
-vi.mock('./hooks/useAuth', () => ({
+vi.mock('./hooks/auth/useAuth', () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-// Mock the useAutoLogout hook
-vi.mock('./hooks/useAutoLogout', () => ({
+vi.mock('./hooks/auth/useAutoLogout', () => ({
   useAutoLogout: vi.fn(),
 }));
 
@@ -225,8 +225,7 @@ describe('App Integration Tests', () => {
       // Wait for theme to be applied
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        // Blue theme primary color is #3E848C
-        expect(primaryColor).toBe('#3E848C');
+        expect(primaryColor).toBe(THEMES.blue.colors.primary);
       });
     });
 
@@ -249,8 +248,7 @@ describe('App Integration Tests', () => {
       // Wait for default theme to be applied
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        // Brown/Tan theme (default) primary color is #F5F1E8
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(THEMES['brown-tan'].colors.primary);
       });
     });
 
@@ -277,8 +275,7 @@ describe('App Integration Tests', () => {
       // Wait for default theme to be applied
       await waitFor(() => {
         const primaryColor = document.documentElement.style.getPropertyValue('--color-primary');
-        // Brown/Tan theme (default) primary color is #F5F1E8
-        expect(primaryColor).toBe('#F5F1E8');
+        expect(primaryColor).toBe(THEMES['brown-tan'].colors.primary);
       });
     });
 
@@ -309,11 +306,11 @@ describe('App Integration Tests', () => {
         const accent = document.documentElement.style.getPropertyValue('--color-accent');
         const tertiary = document.documentElement.style.getPropertyValue('--color-tertiary');
 
-        // Green theme colors
-        expect(primary).toBe('#F4F6F1');
-        expect(secondary).toBe('#8BA888');
-        expect(accent).toBe('#4D6B4F');
-        expect(tertiary).toBe('#D4A373');
+        const g = THEMES.green.colors;
+        expect(primary).toBe(g.primary);
+        expect(secondary).toBe(g.secondary);
+        expect(accent).toBe(g.accent);
+        expect(tertiary).toBe(g.tertiary);
       });
     });
   });

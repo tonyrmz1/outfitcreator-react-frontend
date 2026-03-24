@@ -4,8 +4,8 @@ import { useAuth } from '../auth/useAuth';
 import authAPI from '../../api/endpoints/auth';
 import type { User, LoginResponse } from '../../types';
 
-// Mock the authAPI
-vi.mock('../api/auth', () => ({
+// Mock the authAPI (path must match what useAuth imports)
+vi.mock('../../api/endpoints/auth', () => ({
   default: {
     login: vi.fn(),
     register: vi.fn(),
@@ -13,6 +13,9 @@ vi.mock('../api/auth', () => ({
     updateProfile: vi.fn(),
   },
 }));
+
+/** Minimal three-part token accepted by tokenManager.isValidTokenFormat */
+const VALID_JWT = 'a.b.c';
 
 describe('useAuth', () => {
   const mockUser: User = {
@@ -25,7 +28,7 @@ describe('useAuth', () => {
   };
 
   const mockLoginResponse: LoginResponse = {
-    token: 'mock-jwt-token',
+    token: VALID_JWT,
     user: mockUser,
   };
 
@@ -53,7 +56,7 @@ describe('useAuth', () => {
     });
 
     it('should check for existing token on mount and restore session', async () => {
-      localStorage.setItem('authToken', 'existing-token');
+      localStorage.setItem('authToken', VALID_JWT);
       vi.mocked(authAPI.getProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useAuth());
@@ -98,6 +101,7 @@ describe('useAuth', () => {
   describe('login', () => {
     it('should login successfully and store token', async () => {
       vi.mocked(authAPI.login).mockResolvedValue(mockLoginResponse);
+      vi.mocked(authAPI.getProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useAuth());
 
@@ -116,7 +120,7 @@ describe('useAuth', () => {
         email: 'test@example.com',
         password: 'password123',
       });
-      expect(localStorage.getItem('authToken')).toBe('mock-jwt-token');
+      expect(localStorage.getItem('authToken')).toBe(VALID_JWT);
       expect(result.current.user).toEqual(mockUser);
       expect(result.current.isAuthenticated).toBe(true);
     });
@@ -149,6 +153,7 @@ describe('useAuth', () => {
     it('should register and auto-login successfully', async () => {
       vi.mocked(authAPI.register).mockResolvedValue(mockUser);
       vi.mocked(authAPI.login).mockResolvedValue(mockLoginResponse);
+      vi.mocked(authAPI.getProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useAuth());
 
@@ -175,7 +180,7 @@ describe('useAuth', () => {
         email: 'test@example.com',
         password: 'password123',
       });
-      expect(localStorage.getItem('authToken')).toBe('mock-jwt-token');
+      expect(localStorage.getItem('authToken')).toBe(VALID_JWT);
       expect(result.current.user).toEqual(mockUser);
       expect(result.current.isAuthenticated).toBe(true);
     });
@@ -208,7 +213,7 @@ describe('useAuth', () => {
 
   describe('logout', () => {
     it('should logout and clear user state', async () => {
-      localStorage.setItem('authToken', 'existing-token');
+      localStorage.setItem('authToken', VALID_JWT);
       vi.mocked(authAPI.getProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useAuth());
@@ -229,7 +234,7 @@ describe('useAuth', () => {
 
   describe('updateProfile', () => {
     it('should update profile successfully', async () => {
-      localStorage.setItem('authToken', 'existing-token');
+      localStorage.setItem('authToken', VALID_JWT);
       vi.mocked(authAPI.getProfile).mockResolvedValue(mockUser);
 
       const updatedUser: User = {
@@ -260,7 +265,7 @@ describe('useAuth', () => {
     });
 
     it('should throw error on failed profile update', async () => {
-      localStorage.setItem('authToken', 'existing-token');
+      localStorage.setItem('authToken', VALID_JWT);
       vi.mocked(authAPI.getProfile).mockResolvedValue(mockUser);
       vi.mocked(authAPI.updateProfile).mockRejectedValue(new Error('Update failed'));
 
@@ -295,7 +300,7 @@ describe('useAuth', () => {
     });
 
     it('should return true when user exists', async () => {
-      localStorage.setItem('authToken', 'existing-token');
+      localStorage.setItem('authToken', VALID_JWT);
       vi.mocked(authAPI.getProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useAuth());

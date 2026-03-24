@@ -5,7 +5,7 @@ import type { Outfit, OutfitFormData, PaginatedResponse } from '../../types';
 import { ClothingCategory, ItemPosition, Season } from '../../types';
 
 // Mock the apiClient
-vi.mock('./client', () => ({
+vi.mock('../client', () => ({
   default: {
     get: vi.fn(),
     post: vi.fn(),

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ClothingItemForm } from './ClothingItemForm';
+import { ClothingItemForm } from '../features/Closet/ClothingItemForm';
 import { ClothingCategory, Season, FitCategory } from '../../types';
 
 describe('ClothingItemForm', () => {

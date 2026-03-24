@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import clothingItemsAPI from './clothing';
+import clothingItemsAPI from '../endpoints/clothing';
 import apiClient from '../client';
 import type { ClothingItem, ClothingItemFormData, ClothingItemFilters, PaginatedResponse } from '../../types';
 import { ClothingCategory, Season, FitCategory } from '../../types';
 
 // Mock the apiClient
-vi.mock('./client', () => ({
+vi.mock('../client', () => ({
   default: {
     get: vi.fn(),
     post: vi.fn(),
@@ -118,11 +118,13 @@ describe('ClothingItemsAPI', () => {
       const result = await clothingItemsAPI.create(formData);
 
       expect(apiClient.postFormData).toHaveBeenCalledWith('/api/clothing', expect.any(FormData));
-      
-      // Verify FormData contents
+
       const callArgs = vi.mocked(apiClient.postFormData).mock.calls[0];
       const sentFormData = callArgs[1] as FormData;
-      expect(sentFormData.get('data')).toBe(JSON.stringify(formData));
+      expect(sentFormData.get('name')).toBe(formData.name);
+      expect(sentFormData.get('brand')).toBe(formData.brand);
+      expect(sentFormData.get('primaryColor')).toBe(formData.primaryColor);
+      expect(sentFormData.get('category')).toBe(formData.category);
       expect(sentFormData.get('photo')).toBeNull();
       
       expect(result).toEqual(mockClothingItem);
@@ -142,11 +144,12 @@ describe('ClothingItemsAPI', () => {
       const result = await clothingItemsAPI.create(formData, mockFile);
 
       expect(apiClient.postFormData).toHaveBeenCalledWith('/api/clothing', expect.any(FormData));
-      
-      // Verify FormData contents
+
       const callArgs = vi.mocked(apiClient.postFormData).mock.calls[0];
       const sentFormData = callArgs[1] as FormData;
-      expect(sentFormData.get('data')).toBe(JSON.stringify(formData));
+      expect(sentFormData.get('name')).toBe(formData.name);
+      expect(sentFormData.get('primaryColor')).toBe(formData.primaryColor);
+      expect(sentFormData.get('category')).toBe(formData.category);
       expect(sentFormData.get('photo')).toBe(mockFile);
       
       expect(result).toEqual(mockClothingItem);

@@ -1,11 +1,27 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { RecommendationsPage } from './RecommendationsPage';
-import { useRecommendations } from '../hooks/useRecommendations';
+import { useRecommendations } from '../hooks/data/useRecommendations';
 import { Season, type OutfitRecommendation } from '../types';
 
-// Mock the useRecommendations hook
-vi.mock('../hooks/useRecommendations');
+const { mockCreateOutfit } = vi.hoisted(() => ({
+  mockCreateOutfit: vi.fn(),
+}));
+
+vi.mock('../hooks/data/useOutfits', () => ({
+  useOutfits: () => ({
+    outfits: [],
+    pagination: { page: 0, size: 20, totalPages: 0, totalElements: 0 },
+    isLoading: false,
+    error: null,
+    fetchOutfits: vi.fn(),
+    createOutfit: mockCreateOutfit,
+    updateOutfit: vi.fn(),
+    deleteOutfit: vi.fn(),
+  }),
+}));
+
+vi.mock('../hooks/data/useRecommendations');
 
 describe('RecommendationsPage', () => {
   const mockFetchRecommendations = vi.fn();
@@ -259,18 +275,18 @@ describe('RecommendationsPage', () => {
         fetchRecommendations: mockFetchRecommendations,
         saveRecommendation: mockSaveRecommendation,
       });
-
-      // Mock window.prompt
-      vi.spyOn(window, 'prompt').mockReturnValue('Summer Outfit');
+      mockCreateOutfit.mockReset();
     });
 
-    it('prompts for outfit name when save button clicked', async () => {
+    it('opens name modal when save button clicked', async () => {
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
 
-      expect(window.prompt).toHaveBeenCalledWith('Enter a name for this outfit:');
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+      });
+      expect(screen.getByRole('heading', { name: /save outfit/i })).toBeInTheDocument();
     });
 
     it('saves recommendation with provided name', async () => {
@@ -286,13 +302,19 @@ describe('RecommendationsPage', () => {
 
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByLabelText('Outfit name')).toBeInTheDocument());
+
+      fireEvent.change(screen.getByLabelText('Outfit name'), {
+        target: { value: 'Summer Outfit' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /^save outfit$/i }));
 
       await waitFor(() => {
         expect(mockSaveRecommendation).toHaveBeenCalledWith(
           mockRecommendation,
-          'Summer Outfit'
+          'Summer Outfit',
+          mockCreateOutfit
         );
       });
     });
@@ -310,38 +332,39 @@ describe('RecommendationsPage', () => {
 
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByLabelText('Outfit name')).toBeInTheDocument());
+      fireEvent.change(screen.getByLabelText('Outfit name'), {
+        target: { value: 'Summer Outfit' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /^save outfit$/i }));
 
       await waitFor(() => {
         expect(screen.getByText('Outfit "Summer Outfit" saved successfully!')).toBeInTheDocument();
       });
     });
 
-    it('does not save if user cancels prompt', async () => {
-      vi.spyOn(window, 'prompt').mockReturnValue(null);
-
+    it('does not save if user cancels modal', async () => {
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByRole('button', { name: /^cancel$/i })).toBeInTheDocument());
+      fireEvent.click(screen.getByRole('button', { name: /^cancel$/i }));
 
       expect(mockSaveRecommendation).not.toHaveBeenCalled();
     });
 
-    it('does not save if user enters empty name', async () => {
-      vi.spyOn(window, 'prompt').mockReturnValue('   ');
-
+    it('does not save if user cannot confirm empty name', async () => {
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByLabelText('Outfit name')).toBeInTheDocument());
 
+      expect(screen.getByRole('button', { name: /^save outfit$/i })).toBeDisabled();
       expect(mockSaveRecommendation).not.toHaveBeenCalled();
     });
 
     it('trims whitespace from outfit name', async () => {
-      vi.spyOn(window, 'prompt').mockReturnValue('  Summer Outfit  ');
       mockSaveRecommendation.mockResolvedValue({
         id: 1,
         name: 'Summer Outfit',
@@ -354,13 +377,18 @@ describe('RecommendationsPage', () => {
 
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByLabelText('Outfit name')).toBeInTheDocument());
+      fireEvent.change(screen.getByLabelText('Outfit name'), {
+        target: { value: '  Summer Outfit  ' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /^save outfit$/i }));
 
       await waitFor(() => {
         expect(mockSaveRecommendation).toHaveBeenCalledWith(
           mockRecommendation,
-          'Summer Outfit'
+          'Summer Outfit',
+          mockCreateOutfit
         );
       });
     });
@@ -378,15 +406,18 @@ describe('RecommendationsPage', () => {
 
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByLabelText('Outfit name')).toBeInTheDocument());
+      fireEvent.change(screen.getByLabelText('Outfit name'), {
+        target: { value: 'Summer Outfit' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /^save outfit$/i }));
 
       await waitFor(() => {
         expect(screen.getByText('Outfit "Summer Outfit" saved successfully!')).toBeInTheDocument();
       });
 
-      const dismissButton = screen.getByLabelText('Dismiss success message');
-      fireEvent.click(dismissButton);
+      fireEvent.click(screen.getByLabelText('Dismiss success message'));
 
       expect(screen.queryByText('Outfit "Summer Outfit" saved successfully!')).not.toBeInTheDocument();
     });
@@ -450,14 +481,17 @@ describe('RecommendationsPage', () => {
         saveRecommendation: mockSaveRecommendation,
       });
 
-      vi.spyOn(window, 'prompt').mockReturnValue('Summer Outfit');
       mockSaveRecommendation.mockRejectedValue(new Error('Save failed'));
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByLabelText('Outfit name')).toBeInTheDocument());
+      fireEvent.change(screen.getByLabelText('Outfit name'), {
+        target: { value: 'Summer Outfit' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /^save outfit$/i }));
 
       await waitFor(() => {
         expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -488,7 +522,6 @@ describe('RecommendationsPage', () => {
         saveRecommendation: mockSaveRecommendation,
       });
 
-      vi.spyOn(window, 'prompt').mockReturnValue('Summer Outfit');
       mockSaveRecommendation.mockResolvedValue({
         id: 1,
         name: 'Summer Outfit',
@@ -501,8 +534,12 @@ describe('RecommendationsPage', () => {
 
       render(<RecommendationsPage />);
 
-      const saveButton = screen.getByLabelText('Save this recommendation as an outfit');
-      fireEvent.click(saveButton);
+      fireEvent.click(screen.getByLabelText('Save this recommendation as an outfit'));
+      await waitFor(() => expect(screen.getByLabelText('Outfit name')).toBeInTheDocument());
+      fireEvent.change(screen.getByLabelText('Outfit name'), {
+        target: { value: 'Summer Outfit' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /^save outfit$/i }));
 
       await waitFor(() => {
         const successAlert = screen.getByRole('alert');

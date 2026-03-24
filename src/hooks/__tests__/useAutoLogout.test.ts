@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAutoLogout } from './useAutoLogout';
-import { useAuth } from './useAuth';
+import { useAutoLogout } from '../auth/useAutoLogout';
+import { useAuth } from '../auth/useAuth';
 
-// Mock the useAuth hook
-vi.mock('./useAuth', () => ({
+// Mock the useAuth hook (path must match what useAutoLogout imports)
+vi.mock('../auth/useAuth', () => ({
   useAuth: vi.fn(),
 }));
 

@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import recommendationsAPI from './recommendations';
+import recommendationsAPI from '../endpoints/recommendations';
 import apiClient from '../client';
 import type { OutfitRecommendation, RecommendationFilters } from '../../types';
 import { ClothingCategory, Season } from '../../types';
 
 // Mock the apiClient
-vi.mock('./client', () => ({
+vi.mock('../client', () => ({
   default: {
     get: vi.fn(),
   },

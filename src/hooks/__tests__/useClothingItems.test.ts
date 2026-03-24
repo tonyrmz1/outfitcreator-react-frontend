@@ -4,8 +4,8 @@ import { useClothingItems } from '../data/useClothingItems';
 import clothingItemsAPI from '../../api/endpoints/clothing';
 import type { ClothingItem, ClothingItemFormData, ClothingCategory, PaginatedResponse } from '../../types';
 
-// Mock the API
-vi.mock('../api/clothing', () => ({
+// Mock the API (path must match what useClothingItems imports)
+vi.mock('../../api/endpoints/clothing', () => ({
   default: {
     getAll: vi.fn(),
     create: vi.fn(),
@@ -29,7 +29,7 @@ describe('useClothingItems', () => {
 
   const mockPaginatedResponse: PaginatedResponse<ClothingItem> = {
     content: [mockItem],
-    page: 0,
+    number: 0,
     size: 20,
     totalElements: 1,
     totalPages: 1,

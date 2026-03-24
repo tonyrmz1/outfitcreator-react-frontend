@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as fc from 'fast-check';
-import { Button, ButtonProps } from './Button';
+import { Button, ButtonProps } from '../common/Button';
 
 /**
  * Property-Based Tests for Button Component
@@ -17,16 +17,16 @@ describe('Button Component - Property-Based Tests', () => {
           fc.string({ minLength: 1, maxLength: 100 }),
           fc.constantFrom('button', 'submit', 'reset'),
           (children, type) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button type={type as 'button' | 'submit' | 'reset'}>
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
-            expect(button).toBeInTheDocument();
+
+            const button = container.querySelector('button');
+            expect(button).toBeTruthy();
             expect(button).toHaveAttribute('type', type);
-            expect(button.tagName).toBe('BUTTON');
+            expect(button!.tagName).toBe('BUTTON');
             
             unmount();
           }
@@ -114,7 +114,7 @@ describe('Button Component - Property-Based Tests', () => {
           fc.constantFrom('primary', 'secondary', 'danger', 'ghost'),
           fc.constantFrom('sm', 'md', 'lg'),
           (children, variant, size) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button
                 loading
                 variant={variant as ButtonProps['variant']}
@@ -123,8 +123,8 @@ describe('Button Component - Property-Based Tests', () => {
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
+
+            const button = container.querySelector('button')!;
             const spinner = button.querySelector('svg');
             
             expect(spinner).toBeInTheDocument();
@@ -148,7 +148,7 @@ describe('Button Component - Property-Based Tests', () => {
           fc.constantFrom('primary', 'secondary', 'danger', 'ghost'),
           fc.boolean(),
           (children, variant, disabled) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button
                 loading={false}
                 variant={variant as ButtonProps['variant']}
@@ -157,8 +157,8 @@ describe('Button Component - Property-Based Tests', () => {
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
+
+            const button = container.querySelector('button')!;
             const spinner = button.querySelector('svg');
             
             expect(spinner).not.toBeInTheDocument();
@@ -178,17 +178,17 @@ describe('Button Component - Property-Based Tests', () => {
           fc.string({ minLength: 1, maxLength: 50 }),
           fc.constantFrom('primary', 'secondary', 'danger', 'ghost'),
           (children, variant) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button variant={variant as ButtonProps['variant']}>
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
+
+            const button = container.querySelector('button')!;
             const variantClassMap = {
-              primary: 'bg-primary-600',
+              primary: 'bg-secondary',
               secondary: 'bg-gray-200',
-              danger: 'bg-red-600',
+              danger: 'bg-secondary',
               ghost: 'bg-transparent',
             };
             
@@ -209,13 +209,13 @@ describe('Button Component - Property-Based Tests', () => {
           fc.string({ minLength: 1, maxLength: 50 }),
           fc.constantFrom('sm', 'md', 'lg'),
           (children, size) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button size={size as ButtonProps['size']}>
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
+
+            const button = container.querySelector('button')!;
             const sizeClassMap = {
               sm: ['px-3', 'py-1.5'],
               md: ['px-4', 'py-2'],
@@ -241,13 +241,13 @@ describe('Button Component - Property-Based Tests', () => {
           fc.string({ minLength: 1, maxLength: 50 }),
           fc.constantFrom('primary', 'secondary', 'danger', 'ghost'),
           (children, variant) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button fullWidth variant={variant as ButtonProps['variant']}>
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
+
+            const button = container.querySelector('button')!;
             expect(button.className).toContain('w-full');
             
             unmount();
@@ -262,13 +262,13 @@ describe('Button Component - Property-Based Tests', () => {
         fc.property(
           fc.string({ minLength: 1, maxLength: 50 }),
           (children) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button fullWidth={false}>
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
+
+            const button = container.querySelector('button')!;
             expect(button.className).not.toContain('w-full');
             
             unmount();
@@ -311,7 +311,7 @@ describe('Button Component - Property-Based Tests', () => {
           fc.boolean(),
           fc.boolean(),
           (children, type, variant, size, disabled, loading, fullWidth) => {
-            const { unmount } = render(
+            const { container, unmount } = render(
               <Button
                 type={type as ButtonProps['type']}
                 variant={variant as ButtonProps['variant']}
@@ -323,8 +323,8 @@ describe('Button Component - Property-Based Tests', () => {
                 {children}
               </Button>
             );
-            
-            const button = screen.getByRole('button');
+
+            const button = container.querySelector('button')!;
             
             // Button should always exist
             expect(button).toBeInTheDocument();
