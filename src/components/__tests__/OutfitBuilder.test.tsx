@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { OutfitBuilder } from './OutfitBuilder';
-import { useClothingItems } from '../../hooks/useClothingItems';
+import { OutfitBuilder } from '../features/Outfits/OutfitBuilder';
+import { useClothingItems } from '../../hooks/data/useClothingItems';
 import { ClothingCategory, ItemPosition } from '../../types';
 import type { ClothingItem, Outfit } from '../../types';
 
 // Mock the useClothingItems hook
-vi.mock('../hooks/useClothingItems');
+vi.mock('../../hooks/data/useClothingItems');
 
 describe('OutfitBuilder', () => {
   const mockFetchItems = vi.fn();
