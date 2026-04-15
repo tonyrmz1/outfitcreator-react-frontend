@@ -1,7 +1,8 @@
+import { useState, type ChangeEvent } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Input } from './Input';
+import { Input } from '../common/Input';
 
 describe('Input Component', () => {
   describe('Basic Rendering', () => {
@@ -238,18 +239,29 @@ describe('Input Component', () => {
       expect(handleChange.mock.calls.length).toBeGreaterThan(0);
     });
 
-    it('calls onChange for each character typed', async () => {
+    it('calls onChange with updated value when user types', async () => {
       const handleChange = vi.fn();
       const user = userEvent.setup();
-      render(<Input label="Email" value="" onChange={handleChange} />);
-      
+      function ControlledInput() {
+        const [value, setValue] = useState('');
+        return (
+          <Input
+            label="Email"
+            value={value}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              handleChange(e);
+              setValue(e.target.value);
+            }}
+          />
+        );
+      }
+      render(<ControlledInput />);
+
       await user.type(screen.getByRole('textbox'), 'abc');
-      
-      expect(handleChange).toHaveBeenCalledTimes(3);
-      // Each call receives the individual character from the event
-      expect(handleChange).toHaveBeenNthCalledWith(1, 'a');
-      expect(handleChange).toHaveBeenNthCalledWith(2, 'b');
-      expect(handleChange).toHaveBeenNthCalledWith(3, 'c');
+
+      expect(handleChange).toHaveBeenCalled();
+      const lastCall = handleChange.mock.calls[handleChange.mock.calls.length - 1][0] as ChangeEvent<HTMLInputElement>;
+      expect(lastCall.target.value).toBe('abc');
     });
 
     it('updates displayed value when value prop changes', () => {

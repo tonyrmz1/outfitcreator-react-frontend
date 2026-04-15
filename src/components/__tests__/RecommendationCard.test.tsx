@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { RecommendationCard } from './RecommendationCard';
+import { RecommendationCard } from '../features/Recommendations/RecommendationCard';
 import { OutfitRecommendation, ClothingCategory } from '../../types';
 
 describe('RecommendationCard', () => {
@@ -356,8 +356,8 @@ describe('RecommendationCard', () => {
         <RecommendationCard recommendation={singleItemRecommendation} onSave={vi.fn()} />
       );
 
-      const grid = container.querySelector('.grid');
-      expect(grid).toHaveClass('grid-cols-1');
+      const grid = container.querySelector('.grid') as HTMLElement;
+      expect(grid.style.gridTemplateColumns).toBe('1fr');
     });
 
     it('uses 2-column grid for 2 items', () => {
@@ -365,8 +365,8 @@ describe('RecommendationCard', () => {
         <RecommendationCard recommendation={mockRecommendation} onSave={vi.fn()} />
       );
 
-      const grid = container.querySelector('.grid');
-      expect(grid).toHaveClass('grid-cols-2');
+      const grid = container.querySelector('.grid') as HTMLElement;
+      expect(grid.style.gridTemplateColumns).toBe('repeat(2, 1fr)');
     });
 
     it('uses 3-column grid for 3 items', () => {
@@ -390,8 +390,8 @@ describe('RecommendationCard', () => {
         <RecommendationCard recommendation={threeItemRecommendation} onSave={vi.fn()} />
       );
 
-      const grid = container.querySelector('.grid');
-      expect(grid).toHaveClass('grid-cols-3');
+      const grid = container.querySelector('.grid') as HTMLElement;
+      expect(grid.style.gridTemplateColumns).toBe('repeat(3, 1fr)');
     });
 
     it('uses 2x2 grid for 4 or more items', () => {
@@ -424,8 +424,9 @@ describe('RecommendationCard', () => {
         <RecommendationCard recommendation={fourItemRecommendation} onSave={vi.fn()} />
       );
 
-      const grid = container.querySelector('.grid');
-      expect(grid).toHaveClass('grid-cols-2', 'grid-rows-2');
+      const grid = container.querySelector('.grid') as HTMLElement;
+      expect(grid.style.gridTemplateColumns).toBe('repeat(2, 1fr)');
+      expect(grid.style.gridTemplateRows).toBe('repeat(2, 1fr)');
     });
   });
 });

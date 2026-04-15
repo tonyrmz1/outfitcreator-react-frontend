@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { OutfitCard } from './OutfitCard';
+import { OutfitCard } from '../features/Outfits/OutfitCard';
 import { Outfit, ClothingCategory, ItemPosition } from '../../types';
 
 describe('OutfitCard', () => {

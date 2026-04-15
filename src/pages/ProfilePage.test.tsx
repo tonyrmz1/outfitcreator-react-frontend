@@ -2,8 +2,8 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ProfilePage } from './ProfilePage';
 import { useAuth } from '../contexts';
-import { useClothingItems } from '../hooks/useClothingItems';
-import { useOutfits } from '../hooks/useOutfits';
+import { useClothingItems } from '../hooks/data/useClothingItems';
+import { useOutfits } from '../hooks/data/useOutfits';
 import { ThemeProvider } from '../contexts/ThemeContext';
 
 // Mock hooks
@@ -14,8 +14,8 @@ vi.mock('../contexts', async () => {
     useAuth: vi.fn(),
   };
 });
-vi.mock('../hooks/useClothingItems');
-vi.mock('../hooks/useOutfits');
+vi.mock('../hooks/data/useClothingItems');
+vi.mock('../hooks/data/useOutfits');
 
 describe('ProfilePage', () => {
   const mockUser = {

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
-import { MainLayout } from './MainLayout';
+import { MainLayout } from '../layout/MainLayout';
 import { AuthProvider } from '../../contexts';
 import type { User } from '../../types';
 

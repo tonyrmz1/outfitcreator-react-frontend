@@ -8,28 +8,14 @@ import {
   type OutfitRecommendation,
   type RecommendationFilters,
   type ClothingItem,
+  type Outfit,
 } from '../../types';
 
-// Mock the APIs
-vi.mock('../api/recommendations', () => ({
+// Mock the API (path must match what useRecommendations imports)
+vi.mock('../../api/endpoints/recommendations', () => ({
   default: {
     getRecommendations: vi.fn(),
   },
-}));
-
-// Mock useOutfits hook
-vi.mock('./useOutfits', () => ({
-  useOutfits: () => ({
-    createOutfit: vi.fn().mockResolvedValue({
-      id: 1,
-      name: 'Saved Recommendation',
-      notes: 'Test explanation',
-      items: [],
-      isComplete: true,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z',
-    }),
-  }),
 }));
 
 describe('useRecommendations', () => {
@@ -144,15 +130,37 @@ describe('useRecommendations', () => {
   });
 
   describe('saveRecommendation', () => {
+    const savedOutfit: Outfit = {
+      id: 1,
+      name: 'My Saved Outfit',
+      notes: 'Test explanation',
+      items: [],
+      isComplete: true,
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    };
+
     it('should convert recommendation to outfit and save', async () => {
+      const createOutfit = vi.fn().mockResolvedValue(savedOutfit);
       const { result } = renderHook(() => useRecommendations());
 
       const outfitName = 'My Saved Outfit';
 
       await act(async () => {
-        const outfit = await result.current.saveRecommendation(mockRecommendation, outfitName);
+        const outfit = await result.current.saveRecommendation(mockRecommendation, outfitName, createOutfit);
         expect(outfit).toBeDefined();
-        expect(outfit.name).toBe('Saved Recommendation');
+        expect(outfit.name).toBe('My Saved Outfit');
+      });
+
+      expect(createOutfit).toHaveBeenCalledWith({
+        name: outfitName,
+        notes: mockRecommendation.explanation,
+        items: [
+          {
+            clothingItemId: mockClothingItem.id,
+            position: 'TOP',
+          },
+        ],
       });
     });
 
@@ -181,22 +189,34 @@ describe('useRecommendations', () => {
         explanation: 'Great combination',
       };
 
+      const createOutfit = vi.fn().mockResolvedValue(savedOutfit);
       const { result } = renderHook(() => useRecommendations());
 
       await act(async () => {
         const outfit = await result.current.saveRecommendation(
           multiItemRecommendation,
-          'Multi-Item Outfit'
+          'Multi-Item Outfit',
+          createOutfit
         );
         expect(outfit).toBeDefined();
+      });
+
+      expect(createOutfit).toHaveBeenCalledWith({
+        name: 'Multi-Item Outfit',
+        notes: 'Great combination',
+        items: [
+          { clothingItemId: 1, position: 'TOP' },
+          { clothingItemId: 2, position: 'BOTTOM' },
+        ],
       });
     });
 
     it('should include explanation as notes', async () => {
+      const createOutfit = vi.fn().mockResolvedValue(savedOutfit);
       const { result } = renderHook(() => useRecommendations());
 
       await act(async () => {
-        const outfit = await result.current.saveRecommendation(mockRecommendation, 'Test Outfit');
+        const outfit = await result.current.saveRecommendation(mockRecommendation, 'Test Outfit', createOutfit);
         expect(outfit.notes).toBe('Test explanation');
       });
     });

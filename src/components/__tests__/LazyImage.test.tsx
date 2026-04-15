@@ -1,6 +1,6 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../common/LazyImage';
 
 describe('LazyImage', () => {
   const mockSrc = 'https://example.com/image.jpg';

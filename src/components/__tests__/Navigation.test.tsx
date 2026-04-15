@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
-import { Navigation } from './Navigation';
+import { Navigation } from '../layout/Navigation';
 import type { User } from '../../types';
 
 const mockUser: User = {

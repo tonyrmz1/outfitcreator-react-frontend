@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Select, SelectOption } from './Select';
+import { Select, SelectOption } from '../common/Select';
 
 const mockOptions: SelectOption[] = [
   { value: 'option1', label: 'Option 1' },
@@ -556,7 +556,8 @@ describe('Select Component', () => {
       const select = screen.getByRole('combobox');
       expect(select.className).toContain('block');
       expect(select.className).toContain('w-full');
-      expect(select.className).toContain('px-3');
+      expect(select.className).toContain('pl-3');
+      expect(select.className).toContain('pr-10');
       expect(select.className).toContain('py-2');
       expect(select.className).toContain('border');
       expect(select.className).toContain('rounded-lg');

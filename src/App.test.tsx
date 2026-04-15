@@ -2,15 +2,13 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import App from './App';
 
-// Mock the useAuth hook
 const mockUseAuth = vi.fn();
 
-vi.mock('./hooks/useAuth', () => ({
+vi.mock('./hooks/auth/useAuth', () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-// Mock the useAutoLogout hook
-vi.mock('./hooks/useAutoLogout', () => ({
+vi.mock('./hooks/auth/useAutoLogout', () => ({
   useAutoLogout: vi.fn(),
 }));
 

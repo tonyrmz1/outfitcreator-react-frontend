@@ -1,11 +1,25 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { OutfitsPage } from './OutfitsPage';
-import * as useOutfitsModule from '../hooks/useOutfits';
+import * as useOutfitsModule from '../hooks/data/useOutfits';
 import { ItemPosition, ClothingCategory } from '../types';
 
 // Mock the hooks
-vi.mock('../hooks/useOutfits');
+vi.mock('../hooks/data/useOutfits');
+
+vi.mock('../hooks/data/useClothingItems', () => ({
+  useClothingItems: () => ({
+    items: [],
+    pagination: { page: 0, size: 20, totalPages: 0, totalElements: 0 },
+    isLoading: false,
+    error: null,
+    fetchItems: vi.fn(),
+    createItem: vi.fn(),
+    updateItem: vi.fn(),
+    deleteItem: vi.fn(),
+    uploadPhoto: vi.fn(),
+  }),
+}));
 
 describe('OutfitsPage', () => {
   const mockFetchOutfits = vi.fn();

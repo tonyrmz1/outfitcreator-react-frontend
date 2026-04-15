@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { FilterPanel } from './FilterPanel';
+import { FilterPanel } from '../features/Closet/FilterPanel';
 import { ClothingCategory, Season, ClothingItemFilters } from '../../types';
 
 describe('FilterPanel', () => {
